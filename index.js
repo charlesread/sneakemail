@@ -31,7 +31,13 @@ server.route({
 
     co(function * () {
       reply()
-      let slug = yield enigma.encrypt(request.payload)
+      let p = request.payload
+      let obj = {
+        to: p.to,
+        subject: p.subject,
+        passthrough: p.passthrough
+      }
+      let slug = yield enigma.encrypt(obj)
       let imgTag = yield enigma.createImgTag(slug)
       mailOptions.html += imgTag
       let info = yield  transporter.sendMail(mailOptions)
