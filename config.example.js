@@ -15,7 +15,7 @@ module.exports = {
   },
   nodemailer: {
     transporter: {
-      service: 'Gmail',
+      service: 'Mailjet',
       auth: {
         user: '',
         pass: ''
