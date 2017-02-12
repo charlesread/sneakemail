@@ -1,6 +1,6 @@
 {
   "name": "sneakemail",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Simple email tracking, know when your emails are opened.",
   "keywords": [
     "email",
