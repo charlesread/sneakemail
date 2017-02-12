@@ -1,0 +1,8 @@
+{
+  "dependencies": [
+    "../../../layout/default/browser.json",
+    "./lib.js",
+    { "type": "css", "url": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" },
+    { "type": "js", "url": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" }
+  ]
+}

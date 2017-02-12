@@ -1,3 +1,19 @@
 body {
     background-color: #eee;
 }
+
+main {
+    margin: 20px;
+}
+
+input.form-control, div#cke_html, textarea#passthrough {
+    margin-bottom: 20px;
+}
+
+textarea.red {
+    color: red;
+}
+
+textarea.green {
+    color: green;
+}

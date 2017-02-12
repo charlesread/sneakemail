@@ -2,5 +2,13 @@
 <layout-use('../../../layout/default/template.marko', data)>
 <layout-put into="body">
     <h1>/email [get]</h1>
+    <form method="post" action="/email">
+        <input class="form-control" name="to" id="to" type="text" placeholder="To">
+        <input class="form-control" name="fromName" id="fromName" type="text" placeholder="From Name">
+        <input class="form-control" name="subject" id="subject" type="text" placeholder="Subject">
+        <textarea name="html" id="html" rows="10" cols="80"></textarea>
+        <textarea class="form-control" name="passthrough" id="passthrough" placeholder="Passthrough JSON"></textarea>
+        <input class="form-control button btn-warning" type="submit" value="Send">
+    </form>
 </layout-put>
 </layout-use>
