@@ -1,12 +1,22 @@
 {
   "name": "sneaker",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Simple email tracking, know when your emails are opened.",
+  "keywords": [
+    "email",
+    "tracking",
+    "mailchimp",
+    "marketing"
+  ],
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/charlesread/sneaker.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Charles Read",
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.4.7",
