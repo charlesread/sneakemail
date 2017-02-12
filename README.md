@@ -1,18 +1,18 @@
-# Sneaker
+# Sneakemail
 
-Ever wonder how companies like _Constant Contact_ or _MailChimp_ track when somebody opens one of their emails?  It's pretty neat, and _Sneaker_ effectively recreates it, although probably in a less robust way.
+Ever wonder how companies like _Constant Contact_ or _MailChimp_ track when somebody opens one of their emails?  It's pretty neat, and _Sneakemail_ effectively recreates it, although probably in a less robust way.
 
-Nevertheless, _Sneaker_ will allow you to send emails and know when those emails have been opened.
+Nevertheless, _Sneakemail_ will allow you to send emails and know when those emails have been opened.
 
 ## Moving Parts
 
-_Sneaker_ consists of an **API** and a [soon to come] **UI**.
+_Sneakemail_ consists of an **API** and a [soon to come] **UI**.
 
 ### API
 
 The API uses _Hapi_, to handle the endpoints, and _nodemailer_, to send emails.  During configuration you have direct access to both of these modules, so you can manipulate them however you lke.
 
-By default, the _Sneaker_ API will create the two endpoints:
+By default, the _Sneakemail_ API will create the two endpoints:
 
 #### `/email [POST]`
 	
@@ -32,7 +32,7 @@ This endpoint cab be used to send an email, and inject into that email the sneak
 }
 ```
 
-The _Sneaker_ API will then send an email to `to` and appends a `<link rel="stylesheet" ... >` tag to the `html`.  The `href` attribute of the `<link />` tag will be a URL that that is seemingly the location of a CSS file.  But it's not a real CSS file, before the _Sneaker_ API sends the email it encrypts the `passthrough` object that was posted to `/email` and that encrypted string becomes the name of the CSS file referenced in the `<link>`'s `href` attribute (the name of the CSS file becomes the `slug` in the endpoint below.
+The _Sneakemail_ API will then send an email to `to` and appends a `<link rel="stylesheet" ... >` tag to the `html`.  The `href` attribute of the `<link />` tag will be a URL that that is seemingly the location of a CSS file.  But it's not a real CSS file, before the _Sneakemail_ API sends the email it encrypts the `passthrough` object that was posted to `/email` and that encrypted string becomes the name of the CSS file referenced in the `<link>`'s `href` attribute (the name of the CSS file becomes the `slug` in the endpoint below.
     
 #### `/{slug}.css [GET]`
 
@@ -48,8 +48,8 @@ This is how the tracking works.  When an email client downloads the CSS file in 
 const path = require('path')
 const co = require('bluebird-co').co
 
-const Sneaker = require(path.join(__dirname, 'index'))
-const api = Sneaker.api
+const Sneakemail = require(path.join(__dirname, 'index'))
+const api = Sneakemail.api
 
 const options = {
   // the api object gets passed DIRECTLY to the Hapi `server.connection()` method
@@ -69,7 +69,7 @@ const options = {
     }
   },
   // this becomes the from address in the email that is sent
-  sneaker: {
+  Sneakemail: {
     fromAddress: 'email@gmail.com'
   },
   // this is the function that gets called when somebody opens an email, its argument is an object that contains the
@@ -88,7 +88,7 @@ co(function *() {
     method: 'get',
     path: '/',
     handler: (req, reply) => {
-      reply('Welcome to the Sneaker API')
+      reply('Welcome to the Sneakemail API')
     }
   })
 
