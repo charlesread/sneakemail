@@ -42,13 +42,19 @@ This is how the tracking works.  When an email client downloads the CSS file in 
 
 ### Usage
 
+Install `sneakemail`
+
+```
+npm install --save sneakemail
+```
+
 ```javascript
 'use strict'
 
 const path = require('path')
 const co = require('bluebird-co').co
 
-const Sneakemail = require(path.join(__dirname, 'index'))
+const Sneakemail = require('sneakemail')
 const api = Sneakemail.api
 
 const options = {

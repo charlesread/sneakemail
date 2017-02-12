@@ -1,117 +1,34 @@
 0 info it worked if it ends with ok
 1 verbose cli [ '/Users/charles/.nvm/versions/node/v6.9.2/bin/node',
 1 verbose cli   '/Users/charles/.nvm/versions/node/v6.9.2/bin/npm',
-1 verbose cli   'publish' ]
+1 verbose cli   'version',
+1 verbose cli   'patch' ]
 2 info using npm@3.10.9
 3 info using node@v6.9.2
-4 verbose publish [ '.' ]
-5 silly cache add args [ '.', null ]
-6 verbose cache add spec .
-7 silly cache add parsed spec Result {
-7 silly cache add   raw: '.',
-7 silly cache add   scope: null,
-7 silly cache add   escapedName: null,
-7 silly cache add   name: null,
-7 silly cache add   rawSpec: '.',
-7 silly cache add   spec: '/Users/charles/Development/node/sneaker',
-7 silly cache add   type: 'directory' }
-8 verbose addLocalDirectory /Users/charles/.npm/sneaker/0.0.1/package.tgz not in flight; packing
-9 verbose correctMkdir /Users/charles/.npm correctMkdir not in flight; initializing
-10 info lifecycle sneaker@0.0.1~prepublish: sneaker@0.0.1
-11 silly lifecycle sneaker@0.0.1~prepublish: no script for prepublish, continuing
-12 verbose tar pack [ '/Users/charles/.npm/sneaker/0.0.1/package.tgz',
-12 verbose tar pack   '/Users/charles/Development/node/sneaker' ]
-13 verbose tarball /Users/charles/.npm/sneaker/0.0.1/package.tgz
-14 verbose folder /Users/charles/Development/node/sneaker
-15 verbose addLocalTarball adding from inside cache /Users/charles/.npm/sneaker/0.0.1/package.tgz
-16 verbose correctMkdir /Users/charles/.npm correctMkdir not in flight; initializing
-17 silly cache afterAdd sneaker@0.0.1
-18 verbose afterAdd /Users/charles/.npm/sneaker/0.0.1/package/package.json not in flight; writing
-19 verbose correctMkdir /Users/charles/.npm correctMkdir not in flight; initializing
-20 verbose afterAdd /Users/charles/.npm/sneaker/0.0.1/package/package.json written
-21 silly publish { name: 'sneaker',
-21 silly publish   version: '0.0.1',
-21 silly publish   description: 'Simple email tracking, know when your emails are opened.',
-21 silly publish   keywords: [ 'email', 'tracking', 'mailchimp', 'marketing' ],
-21 silly publish   main: 'index.js',
-21 silly publish   repository:
-21 silly publish    { type: 'git',
-21 silly publish      url: 'git+https://github.com/charlesread/sneaker.git' },
-21 silly publish   scripts: { test: 'echo "Error: no test specified" && exit 1' },
-21 silly publish   author: { name: 'Charles Read' },
-21 silly publish   license: 'ISC',
-21 silly publish   dependencies:
-21 silly publish    { bluebird: '^3.4.7',
-21 silly publish      'bluebird-co': '^2.2.0',
-21 silly publish      'deep-assign': '^2.0.0',
-21 silly publish      hapi: '^16.1.0',
-21 silly publish      ip: '^1.1.4',
-21 silly publish      nodemailer: '^3.0.2',
-21 silly publish      'simple-encryptor': '^1.1.0' },
-21 silly publish   readme: '# Sneaker\n\nEver wonder how companies like _Constant Contact_ or _MailChimp_ track when somebody opens one of their emails?  It\'s pretty neat, and _Sneaker_ effectively recreates it, although probably in a less robust way.\n\nNevertheless, _Sneaker_ will allow you to send emails and know when those emails have been opened.\n\n## Moving Parts\n\n_Sneaker_ consists of an **API** and a [soon to come] **UI**.\n\n### API\n\nThe API uses _Hapi_, to handle the endpoints, and _nodemailer_, to send emails.  During configuration you have direct access to both of these modules, so you can manipulate them however you lke.\n\nBy default, the _Sneaker_ API will create the two endpoints:\n\n#### `/email [POST]`\n\t\nThis endpoint cab be used to send an email, and inject into that email the sneaky bit: that which allows you to track when an email has been opened.  You, or your application, make an HTTP POST to this endpoint with a body like the following:\n\n```json\n{\n\t"to":"recipient@domain.com",\n    "fromName": "Frank Foo",\n    "subject": "Super Important Meeting",\n    "text": "blah blah bar",\n    "html": "<p>blah blah bar</p>",\n    "passthrough": {\n    \t"username": "ffoo",\n        "emailId": 1234567\n    }\n}\n```\n\nThe _Sneaker_ API will then send an email to `to` and appends a `<link rel="stylesheet" ... >` tag to the `html`.  The `href` attribute of the `<link />` tag will be a URL that that is seemingly the location of a CSS file.  But it\'s not a real CSS file, before the _Sneaker_ API sends the email it encrypts the `passthrough` object that was posted to `/email` and that encrypted string becomes the name of the CSS file referenced in the `<link>`\'s `href` attribute (the name of the CSS file becomes the `slug` in the endpoint below.\n    \n#### `/{slug}.css [GET]`\n\nThis is how the tracking works.  When an email client downloads the CSS file in the body of the email this endpoint decrypts the encrypted `slug` (name of the CSS file), and now has complete access to the `passthrough` object that was POSTed to `/email`.\n\n### UI\n\n### Usage\n\n```javascript\n\'use strict\'\n\nconst path = require(\'path\')\nconst co = require(\'bluebird-co\').co\n\nconst Sneaker = require(path.join(__dirname, \'index\'))\nconst api = Sneaker.api\n\nconst options = {\n  // the api object gets passed DIRECTLY to the Hapi `server.connection()` method\n  server: {\n    api: {\n      port: 3000\n    }\n  },\n  // these values need to be entered according to `node-mailer`: https://nodemailer.com/smtp/well-known,\n  // this object is passed DIRECTLY to `nodemailer.createTransport()`, so do whatever you like according to what\n  // `node-mailer` does, you, of course, don\'t have to use a "well-known" service, as this example does\n  transporter: {\n    service: \'Mailjet\',\n    auth: {\n      user: \'<user>\',\n      pass: \'<pass>\'\n    }\n  },\n  // this becomes the from address in the email that is sent\n  sneaker: {\n    fromAddress: \'email@gmail.com\'\n  },\n  // this is the function that gets called when somebody opens an email, its argument is an object that contains the\n  // `to`, `subject`, and `passthrough` objects that were contained in the body of the HTTP POST to `/email`\n  openCallback: function (obj) {\n    console.log(obj)\n  }\n}\n\nco(function *() {\n\n  yield api.init(options)\n\n  // add some more routes if you so desire\n  api.server.route({\n    method: \'get\',\n    path: \'/\',\n    handler: (req, reply) => {\n      reply(\'Welcome to the Sneaker API\')\n    }\n  })\n\n  yield api.start()\n\n})\n  .then(() => {\n    console.log(\'api started at \', api.server.info.uri)\n    // lets look at the route table just to confirm that our routes are regisred\n    api.server.table()[0].table.map((t) => {\n      console.log(\'route %s [%s] is registered\', t.path, t.method)\n    })\n  })\n  .catch(console.error)\n```\n\nNow make a POST to `/email`, wait for the email to come, open it, and check your console!',
-21 silly publish   readmeFilename: 'README.md',
-21 silly publish   gitHead: 'dea4010e64cd1ef1a33f0a7343fb1a933222266f',
-21 silly publish   bugs: { url: 'https://github.com/charlesread/sneaker/issues' },
-21 silly publish   homepage: 'https://github.com/charlesread/sneaker#readme',
-21 silly publish   _id: 'sneaker@0.0.1',
-21 silly publish   _shasum: '202959099730530eee662c9d186d899d000ed4fe',
-21 silly publish   _from: '.' }
-22 verbose getPublishConfig undefined
-23 silly mapToRegistry name sneaker
-24 silly mapToRegistry using default registry
-25 silly mapToRegistry registry https://registry.npmjs.org/
-26 silly mapToRegistry data Result {
-26 silly mapToRegistry   raw: 'sneaker',
-26 silly mapToRegistry   scope: null,
-26 silly mapToRegistry   escapedName: 'sneaker',
-26 silly mapToRegistry   name: 'sneaker',
-26 silly mapToRegistry   rawSpec: '',
-26 silly mapToRegistry   spec: 'latest',
-26 silly mapToRegistry   type: 'tag' }
-27 silly mapToRegistry uri https://registry.npmjs.org/sneaker
-28 verbose publish registryBase https://registry.npmjs.org/
-29 silly publish uploading /Users/charles/.npm/sneaker/0.0.1/package.tgz
-30 verbose request uri https://registry.npmjs.org/sneaker
-31 verbose request sending authorization for write operation
-32 info attempt registry request try #1 at 10:46:50 AM
-33 verbose request using bearer token for auth
-34 verbose request id 6ddfce5c25b32772
-35 http request PUT https://registry.npmjs.org/sneaker
-36 http 403 https://registry.npmjs.org/sneaker
-37 verbose headers { 'content-type': 'application/json',
-37 verbose headers   'cache-control': 'max-age=300',
-37 verbose headers   'content-length': '101',
-37 verbose headers   'accept-ranges': 'bytes',
-37 verbose headers   date: 'Sun, 12 Feb 2017 15:46:50 GMT',
-37 verbose headers   via: '1.1 varnish',
-37 verbose headers   connection: 'keep-alive',
-37 verbose headers   'x-served-by': 'cache-atl6244-ATL',
-37 verbose headers   'x-cache': 'MISS',
-37 verbose headers   'x-cache-hits': '0',
-37 verbose headers   'x-timer': 'S1486914410.425600,VS0,VE352',
-37 verbose headers   vary: 'Accept-Encoding' }
-38 verbose request invalidating /Users/charles/.npm/registry.npmjs.org/sneaker on PUT
-39 error publish Failed PUT 403
-40 verbose stack Error: you do not have permission to publish "sneaker". Are you logged in as the correct user? : sneaker
-40 verbose stack     at makeError (/Users/charles/.nvm/versions/node/v6.9.2/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
-40 verbose stack     at CachingRegistryClient.<anonymous> (/Users/charles/.nvm/versions/node/v6.9.2/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:290:14)
-40 verbose stack     at Request._callback (/Users/charles/.nvm/versions/node/v6.9.2/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
-40 verbose stack     at Request.self.callback (/Users/charles/.nvm/versions/node/v6.9.2/lib/node_modules/npm/node_modules/request/request.js:187:22)
-40 verbose stack     at emitTwo (events.js:106:13)
-40 verbose stack     at Request.emit (events.js:191:7)
-40 verbose stack     at Request.<anonymous> (/Users/charles/.nvm/versions/node/v6.9.2/lib/node_modules/npm/node_modules/request/request.js:1048:10)
-40 verbose stack     at emitOne (events.js:96:13)
-40 verbose stack     at Request.emit (events.js:188:7)
-40 verbose stack     at IncomingMessage.<anonymous> (/Users/charles/.nvm/versions/node/v6.9.2/lib/node_modules/npm/node_modules/request/request.js:969:12)
-41 verbose statusCode 403
-42 verbose pkgid sneaker
-43 verbose cwd /Users/charles/Development/node/sneaker
-44 error Darwin 15.6.0
-45 error argv "/Users/charles/.nvm/versions/node/v6.9.2/bin/node" "/Users/charles/.nvm/versions/node/v6.9.2/bin/npm" "publish"
-46 error node v6.9.2
-47 error npm  v3.10.9
-48 error code E403
-49 error you do not have permission to publish "sneaker". Are you logged in as the correct user? : sneaker
-50 error If you need help, you may report this error at:
-50 error     <https://github.com/npm/npm/issues>
-51 verbose exit [ 1, true ]
+4 info git [ 'status', '--porcelain' ]
+5 verbose stack Error: Git working directory not clean.
+5 verbose stack M README.md
+5 verbose stack M examples/soloApi.js
+5 verbose stack D npm-debug.log
+5 verbose stack     at /Users/charles/.nvm/versions/node/v6.9.2/lib/node_modules/npm/lib/version.js:247:19
+5 verbose stack     at /Users/charles/.nvm/versions/node/v6.9.2/lib/node_modules/npm/lib/utils/no-progress-while-running.js:21:8
+5 verbose stack     at ChildProcess.exithandler (child_process.js:197:7)
+5 verbose stack     at emitTwo (events.js:106:13)
+5 verbose stack     at ChildProcess.emit (events.js:191:7)
+5 verbose stack     at maybeClose (internal/child_process.js:877:16)
+5 verbose stack     at Socket.<anonymous> (internal/child_process.js:334:11)
+5 verbose stack     at emitOne (events.js:96:13)
+5 verbose stack     at Socket.emit (events.js:188:7)
+5 verbose stack     at Pipe._handle.close [as _onclose] (net.js:498:12)
+6 verbose cwd /Users/charles/Development/node/sneaker
+7 error Darwin 15.6.0
+8 error argv "/Users/charles/.nvm/versions/node/v6.9.2/bin/node" "/Users/charles/.nvm/versions/node/v6.9.2/bin/npm" "version" "patch"
+9 error node v6.9.2
+10 error npm  v3.10.9
+11 error Git working directory not clean.
+11 error M README.md
+11 error M examples/soloApi.js
+11 error D npm-debug.log
+12 error If you need help, you may report this error at:
+12 error     <https://github.com/npm/npm/issues>
+13 verbose exit [ 1, true ]

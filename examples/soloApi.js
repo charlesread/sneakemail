@@ -3,7 +3,7 @@
 const path = require('path')
 const co = require('bluebird-co').co
 
-const Sneaker = require(path.join(__dirname, 'index'))
+const Sneaker = require('sneakemail')
 const api = Sneaker.api
 
 const options = {
