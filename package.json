@@ -11,6 +11,7 @@
   "dependencies": {
     "bluebird": "^3.4.7",
     "bluebird-co": "^2.2.0",
+    "deep-assign": "^2.0.0",
     "hapi": "^16.1.0",
     "ip": "^1.1.4",
     "nodemailer": "^3.0.2",

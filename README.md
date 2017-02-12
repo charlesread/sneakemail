@@ -1,0 +1,108 @@
+# Sneaker
+
+Ever wonder how companies like _Constant Contact_ or _MailChimp_ track when somebody opens one of their emails?  It's pretty neat, and _Sneaker_ effectively recreates it, although probably in a less robust way.
+
+Nevertheless, _Sneaker_ will allow you to send emails and know when those emails have been opened.
+
+## Moving Parts
+
+_Sneaker_ consists of an **API** and a [soon to come] **UI**.
+
+### API
+
+The API uses _Hapi_, to handle the endpoints, and _nodemailer_, to send emails.  During configuration you have direct access to both of these modules, so you can manipulate them however you lke.
+
+By default, the _Sneaker_ API will create the two endpoints:
+
+#### `/email [POST]`
+	
+This endpoint cab be used to send an email, and inject into that email the sneaky bit: that which allows you to track when an email has been opened.  You, or your application, make an HTTP POST to this endpoint with a body like the following:
+
+```json
+{
+	"to":"recipient@domain.com",
+    "fromName": "Frank Foo",
+    "subject": "Super Important Meeting",
+    "text": "blah blah bar",
+    "html": "<p>blah blah bar</p>",
+    "passthrough": {
+    	"username": "ffoo",
+        "emailId": 1234567
+    }
+}
+```
+
+The _Sneaker_ API will then send an email to `to` and appends a `<link rel="stylesheet" ... >` tag to the `html`.  The `href` attribute of the `<link />` tag will be a URL that that is seemingly the location of a CSS file.  But it's not a real CSS file, before the _Sneaker_ API sends the email it encrypts the `passthrough` object that was posted to `/email` and that encrypted string becomes the name of the CSS file referenced in the `<link>`'s `href` attribute (the name of the CSS file becomes the `slug` in the endpoint below.
+    
+#### `/{slug}.css [GET]`
+
+This is how the tracking works.  When an email client downloads the CSS file in the body of the email this endpoint decrypts the encrypted `slug` (name of the CSS file), and now has complete access to the `passthrough` object that was POSTed to `/email`.
+
+### UI
+
+### Usage
+
+```javascript
+'use strict'
+
+const path = require('path')
+const co = require('bluebird-co').co
+
+const Sneaker = require(path.join(__dirname, 'index'))
+const api = Sneaker.api
+
+const options = {
+  // the api object gets passed DIRECTLY to the Hapi `server.connection()` method
+  server: {
+    api: {
+      port: 3000
+    }
+  },
+  // these values need to be entered accodeing to `node-mailer`: https://nodemailer.com/smtp/well-known,
+  // this object is passed DIRECTLY to nodemailer.createTransport(), so do whatever you like according to what
+  // `node-mailer` does, you, of course, don't have to use a "well-known" service, as this example does
+  transporter: {
+    service: 'Mailjet',
+    auth: {
+      user: '<user>',
+      pass: '<pass>'
+    }
+  },
+  // this becomes the from address in the email that is sent
+  sneaker: {
+    fromAddress: 'email@gmail.com'
+  },
+  // this is the function that gets called when somebody opens an email, its argument is an object that contains the
+  // `to`, `subject`, and `passthrough` objects that were contained in the body of the HTTP POST to `/email`
+  openCallback: function (obj) {
+    console.log(obj)
+  }
+}
+
+co(function *() {
+
+  yield api.init(options)
+
+  // add some more routes if you so desire
+  api.server.route({
+    method: 'get',
+    path: '/',
+    handler: (req, reply) => {
+      reply('Welcome to the Sneaker API')
+    }
+  })
+
+  yield api.start()
+
+})
+  .then(() => {
+    console.log('api started at ', api.server.info.uri)
+    // lets look at the route table just to confirm that our routes are regisred
+    api.server.table()[0].table.map((t) => {
+      console.log('route %s [%s] is registered', t.path, t.method)
+    })
+  })
+  .catch(console.error)
+```
+
+Now make a POST to `/email`, wait for the email to come, open it, and check your console!
