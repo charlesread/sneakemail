@@ -58,8 +58,8 @@ const options = {
       port: 3000
     }
   },
-  // these values need to be entered accodeing to `node-mailer`: https://nodemailer.com/smtp/well-known,
-  // this object is passed DIRECTLY to nodemailer.createTransport(), so do whatever you like according to what
+  // these values need to be entered according to `node-mailer`: https://nodemailer.com/smtp/well-known,
+  // this object is passed DIRECTLY to `nodemailer.createTransport()`, so do whatever you like according to what
   // `node-mailer` does, you, of course, don't have to use a "well-known" service, as this example does
   transporter: {
     service: 'Mailjet',
