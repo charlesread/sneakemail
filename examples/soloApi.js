@@ -24,7 +24,7 @@ const options = {
     }
   },
   // this becomes the from address in the email that is sent
-  sneaker: {
+  sneakemail: {
     fromAddress: 'email@gmail.com'
   },
   // this is the function that gets called when somebody opens an email, its argument is an object that contains the

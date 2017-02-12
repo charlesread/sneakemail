@@ -23,8 +23,14 @@
     "bluebird-co": "^2.2.0",
     "deep-assign": "^2.0.0",
     "hapi": "^16.1.0",
+    "inert": "^4.1.0",
     "ip": "^1.1.4",
+    "lasso": "^2.11.1",
+    "lasso-marko": "^2.2.2",
+    "marko": "^3.14.2",
+    "node-dir": "^0.1.16",
     "nodemailer": "^3.0.2",
-    "simple-encryptor": "^1.1.0"
+    "simple-encryptor": "^1.1.0",
+    "underscore": "^1.8.3"
   }
 }

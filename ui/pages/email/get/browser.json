@@ -1,0 +1,5 @@
+{
+  "dependencies": [
+    "../../../layout/default/browser.json"
+  ]
+}

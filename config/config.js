@@ -23,8 +23,11 @@ const defaultConfig = {
       pass: ''
     }
   },
-  sneaker: {
-    fromAddress: 'noreply@domain.com'
+  sneakemail: {
+    fromAddress: 'noreply@domain.com',
+    endpoints: {
+      email: '/email'
+    }
   },
   openCallback: function (obj) {
     console.log(obj)
