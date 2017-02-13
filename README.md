@@ -47,6 +47,8 @@ Install `sneakemail`
 npm install --save sneakemail
 ```
 
+Check out `config/config.js` for the default configuration.  The options give to `api.init()` and `ui.init()` are merged with the defaults, at minimum your options should contain the `transporter` and `sneakemail.fromAddress` attributes (because that's specific to you).
+
 ```javascript
 'use strict'
 
