@@ -5,13 +5,13 @@ const request = require('request')
 
 const page = require(require.resolve(path.join(__dirname, 'template.marko')))
 const api = require(path.join(__dirname, '..', '..', '..', '..', 'lib', 'api'))
-const config = require(path.join(__dirname, '..', '..', '..', '..', 'config', 'config'))()
+const options = require(path.join(__dirname, '..', '..', '..', '..', 'config', 'config'))()
 
 const route = {
   method: 'post',
-  path: `/${path.basename(path.join(__dirname, '..'))}`,
+  path: options.sneakemail.endpoints.ui.emailPost,
   handler: function (req, reply) {
-    const emailPostUrl = api.server.info.uri + config.sneakemail.endpoints.email
+    const emailPostUrl = api.server.info.uri + options.sneakemail.endpoints.api.emailPost
     console.log(req.payload)
     request(
       {

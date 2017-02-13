@@ -3,8 +3,7 @@
 const path = require('path')
 const co = require('bluebird-co').co
 
-const Sneakemail = require(path.join(__dirname, 'index'))
-// const Sneakemail = require('sneakemail')
+const Sneakemail = require('sneakemail')
 const api = Sneakemail.api
 const ui = Sneakemail.ui
 
@@ -29,7 +28,13 @@ const options = {
   sneakemail: {
     fromAddress: 'email@gmail.com',
     endpoints: {
-      email: '/email'
+      api: {
+        emailPost: '/email' //default
+      },
+      ui: {
+        index: '/', //default
+        emailPost: '/email' //default
+      }
     }
   },
   // this is the function that gets called when somebody opens an email, its argument is an object that contains the
@@ -63,11 +68,11 @@ co(function *() {
     // lets look at the route table just to confirm that our routes are regisred
     console.log('api routes:')
     api.server.table()[0].table.map((t) => {
-      console.log(' route %s [%s] is registered', t.path, t.method)
+      console.log(' route %s [%s] is registered: %s%s', t.path, t.method, api.server.info.uri, t.path)
     })
     console.log('ui routes:')
     ui.server.table()[0].table.map((t) => {
-      console.log(' route %s [%s] is registered', t.path, t.method)
+      console.log(' route %s [%s] is registered: %s%s', t.path, t.method, ui.server.info.uri, t.path)
     })
   })
   .catch(console.error)

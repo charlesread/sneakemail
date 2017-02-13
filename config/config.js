@@ -26,7 +26,13 @@ const defaultConfig = {
   sneakemail: {
     fromAddress: 'noreply@domain.com',
     endpoints: {
-      email: '/email'
+      api: {
+        emailPost: '/email'
+      },
+      ui: {
+        emailPost: '/email',
+        index: '/'
+      }
     }
   },
   openCallback: function (obj) {
