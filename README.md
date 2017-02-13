@@ -129,4 +129,22 @@ co(function *() {
   .catch(console.error)
 ```
 
+Will output something like
+
+```
+api started at  http://10.0.0.167:3000
+ui started at  http://10.0.0.167:8080
+api routes:
+ route /email [post] is registered: http://10.0.0.167:3000/email
+ route /{slug}.css [get] is registered: http://10.0.0.167:3000/{slug}.css
+ route / [get] is registered: http://10.0.0.167:3000/
+ui routes:
+ route / [get] is registered: http://10.0.0.167:8080/
+ route /{param*} [get] is registered: http://10.0.0.167:8080/{param*}
+ route /static/{param*} [get] is registered: http://10.0.0.167:8080/static/{param*}
+ route /email [post] is registered: http://10.0.0.167:8080/email
+ ```
+
 Now make a POST to `/email`, wait for the email to come, open it, and check your console!
+
+Or browse to the `/` `ui` endpoint `http://10.0.0.167:8080/`.
