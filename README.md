@@ -23,7 +23,6 @@ This endpoint cab be used to send an email, and inject into that email the sneak
 	"to":"recipient@domain.com",
     "fromName": "Frank Foo",
     "subject": "Super Important Meeting",
-    "text": "blah blah bar",
     "html": "<p>blah blah bar</p>",
     "passthrough": {
     	"username": "ffoo",
